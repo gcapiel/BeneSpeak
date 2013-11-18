@@ -94,16 +94,19 @@ var BeneSpeak = {
     
     'speak' : function(element, callback) {
         var status = this._tokenize(element);
-        chrome.tts.speak(status.text, { 'rate' : 1.25, 'desiredEventTypes' : ['word'], 'onEvent' : this._getEventListener(element, status, callback)});
+		element.innerHTML = status.ttsMarkup        
+		var forTTS = new SpeechSynthesisUtterance(status.text);
+        forTTS.onboundary = this._getEventListener(element, status, callback);
+        speechSynthesis.speak(forTTS);
     },
     
     'stop' : function(j) {
-        chrome.tts.stop();
+        speechSynthesis.stop();
     },
     
     '_getEventListener' : function(element, status, callback) {
         return function(event) {
-            if (event.type == 'word') {
+           if (event.name == 'word') {
                 // look up the offset in the map
                 if (status.spanMap.hasOwnProperty(event.charIndex)) {
                     if (status.lastOffset != null) {
@@ -114,9 +117,8 @@ var BeneSpeak = {
                     ts.className = ts.className.replace('ttshlf', 'ttshln');
                     status.lastOffset = event.charIndex;
                 }
-            } else if (event.type == 'start') {
-                element.innerHTML = status.ttsMarkup;
-            } else if (event.type == 'interrupted' || event.type == 'end') {
+            // need to fix this next using onend event
+            } else if (event.name == 'interrupted' || event.name == 'end') {
                 element.innerHTML = status.markup;
                 if (callback != null) {
                     callback();
