@@ -95,9 +95,9 @@ var BeneSpeak = {
     'speak' : function(element, callback) {
         var status = this._tokenize(element);
 		element.innerHTML = status.ttsMarkup        
-		var forTTS = new SpeechSynthesisUtterance(status.text);
-        forTTS.onboundary = this._getEventListener(element, status, callback);
-        speechSynthesis.speak(forTTS);
+		this._forTTS = new SpeechSynthesisUtterance(status.text);
+        this._forTTS.onboundary = this._getEventListener(element, status, callback);
+        speechSynthesis.speak(this._forTTS);
     },
     
     'stop' : function(j) {
