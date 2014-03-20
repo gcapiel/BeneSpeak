@@ -3,6 +3,10 @@
         <title>Test page</title>
         <script type="text/javascript" src="speech.js"></script>
         <script type="text/javascript" src="demo.js"></script>
+        <script type="text/javascript">
+        	var voices = speechSynthesis.getVoices(); // needed to initiate async process to fetch voices
+        </script>
+
         <style type="text/css">
             span.ttshln {
                 background-color: #99CCFF;
