@@ -1,8 +1,8 @@
 var BeneSpeak = {
     
     'BLOCK_DELIMITERS' : ['p', 'div', 'pagenum', 'td', 'table', 'li', 'ul', 'ol'],
-    'BOUNDARY_PUNCTUATION' : [',', ';', '.', '-', 'Ð', 'Ñ', '?', '!'],
-    'IGNORABLE_PUNCTUATION' : ['"', '\'', 'Ò', 'Ó', 'Ô', 'Õ'],
+    'BOUNDARY_PUNCTUATION' : [',', ';', '.', '-', 'ï¿½', 'ï¿½', '?', '!'],
+    'IGNORABLE_PUNCTUATION' : ['"', '\'', 'ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'],
 
     '_tokenize' : function(element) {
         var r = { 'src' : element, 'spanMap' : {}, 'text' : "", 'ttsMarkup' : "", 'markup' : element.innerHTML, 'lastOffset' : null};
@@ -94,8 +94,14 @@ var BeneSpeak = {
     
     'speak' : function(element, callback) {
         var status = this._tokenize(element);
-		element.innerHTML = status.ttsMarkup        
-		this._forTTS = new SpeechSynthesisUtterance(status.text);
+	element.innerHTML = status.ttsMarkup        
+	this._forTTS = new SpeechSynthesisUtterance(status.text);
+	var voices = window.speechSynthesis.getVoices();   
+	for(var i = 0; i < voices.length; i++ ) {
+	        console.log("Voice " + i.toString() + ' ' + voices[i].name + ' ' + voices[i].uri);
+      	}
+      	this._forTTS.voice = voices[10]; // Note: some voices don't support altering params.  For Mac voice 10 (alex) is native.
+	this._forTTS.voiceURI = 'native';
         this._forTTS.onboundary = this._getEventListener(element, status, callback);
         speechSynthesis.speak(this._forTTS);
     },
